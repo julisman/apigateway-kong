@@ -4,6 +4,7 @@
 
 # Load Balancing
 consul:
+  container_name: consul
   image: progrium/consul:latest
   command: -server -bootstrap -ui-dir /ui
   restart: always
@@ -21,6 +22,7 @@ consul:
     - 127.0.0.1
 
 nginx-lb:
+  container_name: nginx-lb
   build: nginx/
   mem_limit: 128m
   ports:
@@ -42,6 +44,7 @@ nginx-lb:
 # Kong Database
 
 kong-database:
+  container_name: kong-database-postgre
   image: postgres:9.4
   ports:
     - 5432
@@ -52,6 +55,7 @@ kong-database:
 # Kong
 
 kong:
+  container_name: kong-2
   build: kong/
   restart: always
   links:
@@ -67,4 +71,12 @@ kong:
   environment:
     - KONG_DATABASE=postgres
     - KONG_PG_HOST=kong-database
-  
+
+# Kong Dashboard
+kong-dashboard:
+  image: pgbi/kong-dashboard
+  ports:
+    - 8080:8080
+  links:
+    - kong:kong
+
